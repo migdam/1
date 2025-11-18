@@ -1,0 +1,55 @@
+# Prometheus configuration for AI Library monitoring
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'ai-library'
+    environment: 'production'
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Rule files
+rule_files:
+  - 'alerts.yml'
+
+# Scrape configurations
+scrape_configs:
+  # AI Library API metrics
+  - job_name: 'ai-library-api'
+    static_configs:
+      - targets: ['ai-library:9090']
+        labels:
+          service: 'api'
+
+  # AI Library health endpoint
+  - job_name: 'ai-library-health'
+    metrics_path: '/health'
+    static_configs:
+      - targets: ['ai-library:5000']
+        labels:
+          service: 'health'
+
+  # Redis metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+        labels:
+          service: 'cache'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node Exporter (if available)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'system'

@@ -1,0 +1,70 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist
+build
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data directories (will be mounted as volumes)
+data/
+logs/
+books/
+text_books/
+cache/
+models/
+
+# Test files
+tests/
+*.test.py
+.pytest_cache/
+.coverage
+
+# Documentation
+docs/
+*.md
+!README.md
+!DEPLOYMENT.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files (use .env.production in container)
+.env
+.env.local
+.env.development
+
+# Backups
+backups/
+*.backup
+*.bak

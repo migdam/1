@@ -1,0 +1,75 @@
+# Prometheus alerting rules for AI Library
+
+groups:
+  - name: ai_library_alerts
+    interval: 30s
+    rules:
+      # Service availability
+      - alert: ServiceDown
+        expr: up{job="ai-library-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AI Library service is down"
+          description: "AI Library API has been down for more than 1 minute"
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(ai_library_requests_error[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }}% over the last 5 minutes"
+
+      # Slow response times
+      - alert: SlowResponseTime
+        expr: ai_library_avg_response_time > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow response times detected"
+          description: "Average response time is {{ $value }}s"
+
+      # High request rate
+      - alert: HighRequestRate
+        expr: rate(ai_library_requests_total[1m]) > 100
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "High request rate"
+          description: "Receiving {{ $value }} requests/second"
+
+      # Database issues
+      - alert: DatabaseConnectionError
+        expr: ai_library_db_errors > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection errors"
+          description: "Database errors detected"
+
+      # Memory usage
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes / 1024 / 1024 > 2048
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}MB"
+
+      # Redis down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis cache is down"
+          description: "Redis has been down for more than 1 minute"
