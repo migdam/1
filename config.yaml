@@ -1,0 +1,98 @@
+# AI Library & Knowledge Engine Configuration
+
+# Embedding Configuration
+embedding:
+  model: "intfloat/e5-small-v2"  # Options: intfloat/e5-small-v2, all-MiniLM-L6-v2, paraphrase-multilingual-MiniLM-L12-v2
+  batch_size: 32
+  device: "cpu"  # cpu or cuda
+  cache_dir: "./models"
+
+# LLM Configuration
+llm:
+  provider: "local"  # Options: openai, gemini, claude, local
+
+  # OpenAI settings
+  openai:
+    model: "gpt-4o-mini"  # gpt-4o-mini, gpt-4o, gpt-4-turbo
+    api_key_env: "OPENAI_API_KEY"
+    temperature: 0.7
+    max_tokens: 2000
+
+  # Gemini settings
+  gemini:
+    model: "gemini-2.0-flash-exp"  # gemini-2.0-flash-exp, gemini-1.5-pro
+    api_key_env: "GEMINI_API_KEY"
+    temperature: 0.7
+    max_tokens: 2000
+
+  # Claude settings
+  claude:
+    model: "claude-3-5-sonnet-20241022"  # claude-3-5-sonnet-20241022, claude-3-5-haiku-20241022
+    api_key_env: "ANTHROPIC_API_KEY"
+    temperature: 0.7
+    max_tokens: 2000
+
+  # Ollama (local) settings
+  ollama:
+    model: "gemma2:9b"  # gemma2:2b, gemma2:9b, llama3.1:8b, llama3.1:70b, mistral, qwen
+    host: "http://localhost:11434"
+    temperature: 0.7
+
+# RAG Configuration
+rag:
+  top_k: 5  # Number of chunks to retrieve
+  similarity_threshold: 0.3  # Minimum similarity score
+  max_context_length: 4000  # Maximum characters in context
+  include_metadata: true  # Include book metadata in context
+  rerank: false  # Use cross-encoder for reranking (future)
+
+# Chunking Configuration
+chunking:
+  chunk_size: 1000  # Target chunk size in words
+  chunk_overlap: 100  # Overlap between chunks in words
+  min_chunk_size: 200  # Minimum chunk size
+  max_chunk_size: 1500  # Maximum chunk size
+  respect_paragraphs: true  # Try to keep paragraphs intact
+  respect_sentences: true  # Try to keep sentences intact
+
+# Paths
+paths:
+  books: "./books"
+  text_output: "./text_books"
+  vector_db: "./data/books_index"
+  metadata_db: "./data/books_metadata.db"
+  logs: "./logs"
+  cache: "./cache"
+
+# Processing Configuration
+processing:
+  batch_size: 10  # Process N books at a time
+  skip_existing: true  # Skip already processed books
+  validate_text: true  # Validate extracted text quality
+  detect_language: true  # Detect book language
+  min_text_length: 100  # Minimum text length to process (characters)
+
+# Supported formats
+formats:
+  supported: [".pdf", ".epub", ".mobi", ".azw3", ".txt", ".docx", ".html", ".htm", ".rtf"]
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "./logs/ai_library.log"
+  console: true
+  max_size: 10485760  # 10 MB
+  backup_count: 5
+
+# Performance
+performance:
+  max_workers: 4  # Parallel workers for processing
+  chunk_batch_size: 100  # Batch size for embedding chunks
+  cache_embeddings: true  # Cache embeddings to disk
+
+# Vector Database
+vector_db:
+  type: "faiss"  # faiss, chroma, custom
+  index_type: "IndexFlatIP"  # FAISS index type (IndexFlatIP for cosine similarity)
+  normalize_vectors: true  # Normalize embeddings for cosine similarity
+  save_interval: 1000  # Save index every N additions
