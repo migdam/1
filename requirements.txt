@@ -26,9 +26,6 @@ google-generativeai>=0.3.0  # Gemini API
 anthropic>=0.7.0  # Claude API
 ollama>=0.1.0  # Ollama local models
 
-# Database
-sqlite3  # Built-in with Python
-
 # Utilities
 pyyaml>=6.0  # Configuration files
 tqdm>=4.66.0  # Progress bars

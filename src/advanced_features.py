@@ -157,7 +157,7 @@ class QuoteExtractor:
 
             # Find quoted text
             quoted_texts = re.findall(r'"([^"]{' + str(min_length) + ',' + str(max_length) + '})"', text)
-            quoted_texts += re.findall(r'"([^"]{' + str(min_length) + ',' + str(max_length) + '})"', text)
+            quoted_texts += re.findall(r'\u2018([^\u2019]{' + str(min_length) + ',' + str(max_length) + '})\u2019', text)
 
             for quote_text in quoted_texts:
                 quotes.append({
@@ -564,7 +564,10 @@ class BookmarkManager:
                 SELECT * FROM reading_lists WHERE id = ?
             """, (list_id,))
 
-            list_data = dict(cursor.fetchone())
+            row = cursor.fetchone()
+            if row is None:
+                return None
+            list_data = dict(row)
 
             cursor.execute("""
                 SELECT * FROM reading_list_items
