@@ -255,7 +255,7 @@ class CachedEmbedder:
                         embedding = np.load(cache_path)
                         embeddings.append(embedding)
                         continue
-                    except:
+                    except Exception:
                         pass
 
             # Need to encode this text
@@ -280,7 +280,7 @@ class CachedEmbedder:
                     cache_path = self._get_cache_path(text_hashes[idx])
                     try:
                         np.save(cache_path, embedding)
-                    except:
+                    except Exception:
                         pass
 
         return np.array(embeddings)

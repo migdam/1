@@ -183,7 +183,7 @@ def process_book(
                 error_message=str(e)
             )
             metadata_db.log_processing('process_book', 'error', book_id, str(e))
-        except:
+        except Exception:
             pass
         return False
 
@@ -323,6 +323,12 @@ def main():
     perf.start("total_processing")
 
     for book_file in tqdm(book_files, desc="Processing books"):
+        # Check if already processed before calling process_book
+        existing_book = metadata_db.get_book_by_path(str(book_file))
+        if existing_book and existing_book['status'] == 'completed' and config.get('processing.skip_existing', True):
+            skipped += 1
+            continue
+
         result = process_book(
             book_file,
             extractor,
@@ -337,12 +343,7 @@ def main():
         if result:
             successful += 1
         else:
-            # Check if it was skipped
-            book_data = metadata_db.get_book_by_path(str(book_file))
-            if book_data and book_data['status'] == 'completed' and result:
-                skipped += 1
-            else:
-                failed += 1
+            failed += 1
 
         # Periodic save
         save_interval = config.get('vector_db.save_interval', 1000)

@@ -110,8 +110,9 @@ class TextChunker:
         current_chunk_parts = []
         current_word_count = 0
         char_position = 0
+        chunk_start_pos = 0
 
-        for para in paragraphs:
+        for i, para in enumerate(paragraphs):
             para = para.strip()
             if not para:
                 continue
@@ -126,8 +127,8 @@ class TextChunker:
                     chunks.append(self._create_chunk(
                         chunk_text,
                         len(chunks),
-                        char_position - len(chunk_text),
-                        char_position
+                        chunk_start_pos,
+                        chunk_start_pos + len(chunk_text)
                     ))
                     current_chunk_parts = []
                     current_word_count = 0
@@ -139,7 +140,9 @@ class TextChunker:
                     sent_chunk.start_pos += char_position
                     sent_chunk.end_pos += char_position
                     chunks.append(sent_chunk)
-                    char_position = sent_chunk.end_pos
+
+                char_position += len(para) + 2  # +2 for \n\n
+                chunk_start_pos = char_position
 
                 continue
 
@@ -150,8 +153,8 @@ class TextChunker:
                 chunks.append(self._create_chunk(
                     chunk_text,
                     len(chunks),
-                    char_position - len(chunk_text),
-                    char_position
+                    chunk_start_pos,
+                    chunk_start_pos + len(chunk_text)
                 ))
 
                 # Handle overlap
@@ -162,6 +165,8 @@ class TextChunker:
                 else:
                     current_chunk_parts = []
                     current_word_count = 0
+
+                chunk_start_pos = char_position
 
             # Add paragraph to current chunk
             current_chunk_parts.append(para)
@@ -174,8 +179,8 @@ class TextChunker:
             chunks.append(self._create_chunk(
                 chunk_text,
                 len(chunks),
-                char_position - len(chunk_text),
-                char_position
+                chunk_start_pos,
+                chunk_start_pos + len(chunk_text)
             ))
 
         # Filter out chunks that are too small (unless it's the only chunk)
